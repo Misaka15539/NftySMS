@@ -30,29 +30,38 @@ class MainActivity : ComponentActivity() {
             SmsNtfyRelayTheme {
                 val context = LocalContext.current
 
-                // Track whether RECEIVE_SMS permission is currently granted.
-                var smsPermissionGranted by remember {
+                // Track whether required permissions are currently granted.
+                var permissionsGranted by remember {
                     mutableStateOf(
                         ContextCompat.checkSelfPermission(
                             context,
                             Manifest.permission.RECEIVE_SMS,
-                        ) == PackageManager.PERMISSION_GRANTED,
+                        ) == PackageManager.PERMISSION_GRANTED &&
+                                ContextCompat.checkSelfPermission(
+                                    context,
+                                    Manifest.permission.READ_SMS,
+                                ) == PackageManager.PERMISSION_GRANTED,
                     )
                 }
 
                 // Launcher that presents the runtime permission dialog and updates state
                 // when the user responds.
                 val permissionLauncher = rememberLauncherForActivityResult(
-                    contract = ActivityResultContracts.RequestPermission(),
-                ) { isGranted ->
-                    smsPermissionGranted = isGranted
+                    contract = ActivityResultContracts.RequestMultiplePermissions(),
+                ) { grants ->
+                    permissionsGranted = grants.values.all { it }
                 }
 
                 // On first composition, automatically request the permission if it has
                 // not been granted yet.
                 LaunchedEffect(Unit) {
-                    if (!smsPermissionGranted) {
-                        permissionLauncher.launch(Manifest.permission.RECEIVE_SMS)
+                    if (!permissionsGranted) {
+                        permissionLauncher.launch(
+                            arrayOf(
+                                Manifest.permission.RECEIVE_SMS,
+                                Manifest.permission.READ_SMS,
+                            ),
+                        )
                     }
                 }
 
@@ -64,7 +73,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     composable("main") {
                         MainScreen(
-                            smsPermissionGranted = smsPermissionGranted,
+                            smsPermissionGranted = permissionsGranted,
                             onNavigateToSettings = { navController.navigate("settings") },
                         )
                     }

@@ -59,6 +59,7 @@ import java.util.Locale
 // ---------------------------------------------------------------------------
 
 private val OutcomeSuccess = Color(0xFF2E7D32)       // green
+private val OutcomePending = Color(0xFF1976D2)       // blue
 private val OutcomeError = Color(0xFFC62828)         // red
 private val OutcomeDisabled = Color(0xFF757575)      // gray
 private val OutcomeSslWarning = Color(0xFFF57F17)    // orange/yellow
@@ -66,6 +67,7 @@ private val OutcomeSslWarning = Color(0xFFF57F17)    // orange/yellow
 private fun LogOutcome.chipColor(): Color = when (this) {
     LogOutcome.SUCCESS,
     LogOutcome.TEST_CONNECTION -> OutcomeSuccess
+    LogOutcome.PENDING -> OutcomePending
     LogOutcome.HTTP_ERROR,
     LogOutcome.TIMEOUT,
     LogOutcome.NETWORK_UNAVAILABLE,
@@ -77,6 +79,7 @@ private fun LogOutcome.chipColor(): Color = when (this) {
 
 private fun LogOutcome.label(): String = when (this) {
     LogOutcome.SUCCESS -> "Success"
+    LogOutcome.PENDING -> "Pending"
     LogOutcome.HTTP_ERROR -> "HTTP Error"
     LogOutcome.TIMEOUT -> "Timeout"
     LogOutcome.NETWORK_UNAVAILABLE -> "No Network"

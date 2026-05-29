@@ -3,6 +3,7 @@ package com.example.smsntfyrelay.data
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import com.example.smsntfyrelay.domain.LogOutcome
 import kotlinx.coroutines.flow.Flow
 
 // ---------------------------------------------------------------------------
@@ -21,7 +22,11 @@ interface LogEntryDao {
 
     /** Insert a single log entry. */
     @Insert
-    suspend fun insert(entry: LogEntry)
+    suspend fun insert(entry: LogEntry): Long
+
+    /** Update an existing log entry. */
+    @Query("UPDATE log_entries SET outcome = :outcome, detail = :detail WHERE id = :id")
+    suspend fun updateStatus(id: Long, outcome: LogOutcome, detail: String?)
 
     /** Delete every row in the table. */
     @Query("DELETE FROM log_entries")

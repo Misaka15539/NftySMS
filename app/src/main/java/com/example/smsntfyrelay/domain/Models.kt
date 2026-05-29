@@ -6,6 +6,7 @@ package com.example.smsntfyrelay.domain
 
 enum class LogOutcome {
     SUCCESS,
+    PENDING, // Waiting for internet or processing
     HTTP_ERROR,
     TIMEOUT,
     NETWORK_UNAVAILABLE,

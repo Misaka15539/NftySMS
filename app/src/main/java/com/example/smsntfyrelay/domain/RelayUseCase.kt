@@ -30,22 +30,26 @@ class RelayUseCase @Inject constructor(
     private val logRepository: LogRepository,
 ) {
 
-    suspend fun relay(sender: String, body: String) {
+    suspend fun relay(sender: String, body: String, logId: Long? = null): Boolean {
         // 1. Check relay toggle — bail out early if disabled
         val relayEnabled = settingsRepository.relayEnabled.first()
         if (!relayEnabled) {
-            logRepository.insert(
-                LogEntry(
-                    timestampMs = System.currentTimeMillis(),
-                    sender = sender,
-                    messagePreview = body.take(60),
-                    outcome = LogOutcome.RELAY_DISABLED,
+            if (logId != null) {
+                logRepository.updateStatus(logId, LogOutcome.RELAY_DISABLED)
+            } else {
+                logRepository.insert(
+                    LogEntry(
+                        timestampMs = System.currentTimeMillis(),
+                        sender = sender,
+                        messagePreview = body.take(60),
+                        outcome = LogOutcome.RELAY_DISABLED,
+                    )
                 )
-            )
-            return
+            }
+            return true
         }
 
-        performRelay(sender, body)
+        return performRelay(sender, body, logId)
     }
 
     /**
@@ -91,32 +95,40 @@ class RelayUseCase @Inject constructor(
         return outcome == LogOutcome.SUCCESS
     }
 
-    private suspend fun performRelay(sender: String, body: String) {
+    private suspend fun performRelay(sender: String, body: String, logId: Long?): Boolean {
         // 2. Check topic URL — bail out if not configured
         val topicUrl = settingsRepository.topicUrl.first()
         if (topicUrl.isBlank()) {
-            logRepository.insert(
-                LogEntry(
-                    timestampMs = System.currentTimeMillis(),
-                    sender = sender,
-                    messagePreview = body.take(60),
-                    outcome = LogOutcome.MISSING_CONFIG,
+            if (logId != null) {
+                logRepository.updateStatus(logId, LogOutcome.MISSING_CONFIG)
+            } else {
+                logRepository.insert(
+                    LogEntry(
+                        timestampMs = System.currentTimeMillis(),
+                        sender = sender,
+                        messagePreview = body.take(60),
+                        outcome = LogOutcome.MISSING_CONFIG,
+                    )
                 )
-            )
-            return
+            }
+            return true // Config error is permanent, don't retry
         }
 
         // 3. Check network connectivity
         if (!isNetworkAvailable()) {
-            logRepository.insert(
-                LogEntry(
-                    timestampMs = System.currentTimeMillis(),
-                    sender = sender,
-                    messagePreview = body.take(60),
-                    outcome = LogOutcome.NETWORK_UNAVAILABLE,
+            if (logId != null) {
+                logRepository.updateStatus(logId, LogOutcome.NETWORK_UNAVAILABLE)
+            } else {
+                logRepository.insert(
+                    LogEntry(
+                        timestampMs = System.currentTimeMillis(),
+                        sender = sender,
+                        messagePreview = body.take(60),
+                        outcome = LogOutcome.NETWORK_UNAVAILABLE,
+                    )
                 )
-            )
-            return
+            }
+            return false // Transient error, should retry
         }
 
         // 4. Read auth credentials (synchronous read, already on IO dispatcher via SmsReceiver)
@@ -134,17 +146,21 @@ class RelayUseCase @Inject constructor(
             sslValidation = sslValidationEnabled,
         )
 
-        // 7. Map RelayResult → LogOutcome and insert the log entry
+        // 7. Map RelayResult → LogOutcome and insert/update the log entry
         val (outcome, detail) = result.toLogOutcomeAndDetail()
-        logRepository.insert(
-            LogEntry(
-                timestampMs = System.currentTimeMillis(),
-                sender = sender,
-                messagePreview = body.take(60),
-                outcome = outcome,
-                detail = detail,
+        if (logId != null) {
+            logRepository.updateStatus(logId, outcome, detail)
+        } else {
+            logRepository.insert(
+                LogEntry(
+                    timestampMs = System.currentTimeMillis(),
+                    sender = sender,
+                    messagePreview = body.take(60),
+                    outcome = outcome,
+                    detail = detail,
+                )
             )
-        )
+        }
 
         // 8. If SSL validation is disabled and credentials are present, add an SSL_WARNING entry
         if (!sslValidationEnabled && authConfig !is AuthConfig.None) {
@@ -158,6 +174,8 @@ class RelayUseCase @Inject constructor(
                 )
             )
         }
+
+        return outcome == LogOutcome.SUCCESS
     }
 
     // -----------------------------------------------------------------------
