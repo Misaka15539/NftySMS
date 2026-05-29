@@ -100,7 +100,7 @@ class SmsReceiver : BroadcastReceiver() {
                             sender = sender,
                             messagePreview = body.take(60),
                             outcome = LogOutcome.PENDING,
-                            detail = "Waiting for internet..."
+                            detail = "Waiting for internet...",
                         )
                     )
 

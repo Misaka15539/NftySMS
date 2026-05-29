@@ -42,7 +42,7 @@ interface LogEntryDao {
      */
     @Query(
         "DELETE FROM log_entries WHERE id IN " +
-            "(SELECT id FROM log_entries ORDER BY timestampMs ASC LIMIT :n)"
+            "(SELECT id FROM log_entries ORDER BY timestampMs ASC LIMIT :n)",
     )
     suspend fun deleteOldest(n: Int)
 }

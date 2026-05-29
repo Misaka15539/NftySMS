@@ -23,7 +23,7 @@ import javax.inject.Inject
  *   7. Optionally log an SSL_WARNING when credentials are sent over an unvalidated connection
  */
 class RelayUseCase @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
     private val settingsRepository: SettingsRepository,
     private val credentialRepository: CredentialRepository,
     private val ntfyRepository: NtfyRepository,
@@ -43,7 +43,7 @@ class RelayUseCase @Inject constructor(
                         sender = sender,
                         messagePreview = body.take(60),
                         outcome = LogOutcome.RELAY_DISABLED,
-                    )
+                    ),
                 )
             }
             return true
@@ -163,7 +163,7 @@ class RelayUseCase @Inject constructor(
         }
 
         // 8. If SSL validation is disabled and credentials are present, add an SSL_WARNING entry
-        if (!sslValidationEnabled && authConfig !is AuthConfig.None) {
+        if (!sslValidationEnabled && (authConfig !is AuthConfig.None)) {
             logRepository.insert(
                 LogEntry(
                     timestampMs = System.currentTimeMillis(),
