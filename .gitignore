@@ -9,9 +9,6 @@
 .cxx
 local.properties
 
-# Gradle wrapper jar (committed separately)
-gradle/wrapper/gradle-wrapper.jar
-
 # Android generated
 app/build/
 app/schemas/
@@ -32,3 +29,6 @@ Thumbs.db
 
 # Kiro
 .kiro/
+
+# Exceptions
+!gradle/wrapper/gradle-wrapper.jar
