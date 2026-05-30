@@ -1,4 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">NtfySMS</string>
+
+    <!-- Actions -->
+    <string name="action_clear_log">Clear Log</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- Messages -->
+    <string name="msg_sms_permission_required">SMS permission required to enable relaying</string>
+    <string name="msg_configure_url_first">Configure a valid topic URL in settings first</string>
+    <string name="msg_connection_test_failed">Connection test failed. Check settings/network.</string>
+
+    <!-- Dialogs -->
+    <string name="dialog_clear_log_title">Clear Log</string>
+    <string name="dialog_clear_log_message">Are you sure you want to remove all log entries? This cannot be undone.</string>
+    <string name="dialog_action_clear">Clear</string>
+    <string name="dialog_action_cancel">Cancel</string>
+
+    <!-- Relay Section -->
+    <string name="relay_toggle_title">SMS Relay</string>
+    <string name="status_sms_permission_required">SMS permission required</string>
+    <string name="status_testing_connection">Testing connection&#8230;</string>
+    <string name="status_forwarding">Forwarding incoming SMS to ntfy</string>
+    <string name="status_paused">Relay is paused</string>
+
+    <!-- Empty State -->
+    <string name="empty_log_title">No activity yet</string>
+    <string name="empty_log_description">Relay events will appear here once SMS messages are received.</string>
+
+    <!-- Settings -->
+    <string name="title_settings">Settings</string>
+    <string name="action_navigate_back">Navigate back</string>
+    <string name="action_save">Save</string>
+    <string name="msg_settings_saved">Settings saved</string>
+
+    <!-- Settings - Topic -->
+    <string name="settings_topic_title">ntfy Topic URL</string>
+    <string name="settings_topic_label">Topic URL</string>
+    <string name="settings_topic_placeholder">https://ntfy.sh/my-topic</string>
+    <string name="settings_topic_error_required">URL is required</string>
+    <string name="settings_topic_error_invalid_protocol">URL must start with http:// or https://</string>
+
+    <!-- Settings - Security -->
+    <string name="settings_security_title">Connection Security</string>
+    <string name="settings_ssl_label">Validate SSL Certificate</string>
+    <string name="settings_ssl_description">Verify the server\'s TLS certificate</string>
+    <string name="settings_ssl_warning">Warning: Disabling SSL validation exposes your connection to interception. Your credentials may be transmitted insecurely.</string>
+
+    <!-- Settings - Auth -->
+    <string name="settings_auth_title">Authorization</string>
+    <string name="settings_auth_none">None</string>
+    <string name="settings_auth_bearer">Bearer</string>
+    <string name="settings_auth_basic">Basic</string>
+    <string name="settings_bearer_title">Bearer Token</string>
+    <string name="settings_bearer_label">Token</string>
+    <string name="settings_bearer_placeholder">Enter bearer token</string>
+    <string name="settings_bearer_hint">A token is already saved. Enter a new value to replace it.</string>
+    <string name="settings_basic_title">Basic Auth Credentials</string>
+    <string name="settings_basic_username_label">Username</string>
+    <string name="settings_basic_username_placeholder">Enter username</string>
+    <string name="settings_basic_password_label">Password</string>
+    <string name="settings_basic_password_placeholder">Enter password</string>
+    <string name="settings_basic_hint">Credentials are already saved. Enter new values to replace them.</string>
+
+    <!-- Settings - Reliability -->
+    <string name="settings_reliability_title">Background Reliability</string>
+    <string name="settings_reliability_optimized">Battery optimization is active</string>
+    <string name="settings_reliability_not_optimized">Battery optimization is disabled</string>
+    <string name="settings_reliability_description">To ensure SMS are relayed instantly, the app should be allowed to run in the background without restrictions.</string>
+    <string name="settings_reliability_action_disable">Disable Battery Optimizations</string>
+    <string name="settings_reliability_miui_action">Fix for MIUI/HyperOS (Auto-start)</string>
+    <string name="settings_reliability_miui_note">Note: On MIUI/HyperOS, please enable \'Auto-start\' and set \'Battery saver\' to \'No restrictions\' in the App Info page.</string>
+
+    <!-- Notifications & Background -->
+    <string name="notification_relay_title">SMS Relay</string>
+    <string name="notification_relay_text">Relaying incoming SMS&#8230;</string>
+
+    <!-- Relay Pipeline & Logs -->
+    <string name="relay_test_title">Relay Connection Test</string>
+    <string name="relay_test_body">SMS Relay connection test successful</string>
+    <string name="relay_sender_system">System</string>
+    <string name="relay_sender_unknown">Unknown</string>
+    <string name="relay_preview_test">Connection test</string>
+    <string name="relay_notification_title">SMS from %s</string>
+    <string name="relay_ssl_warning_detail">Authorization header sent over a connection with SSL validation disabled</string>
+    <string name="relay_http_status">HTTP %d</string>
+    <string name="log_detail_parse_error">SMS PDU parse error</string>
+    <string name="log_detail_pending">Waiting for internet&#8230;</string>
+    <string name="log_detail_unknown_parse_error">Unknown parse error</string>
+
+    <!-- Outcomes -->
+
+    <string name="outcome_success">Success</string>
+    <string name="outcome_pending">Pending</string>
+    <string name="outcome_http_error">HTTP Error</string>
+    <string name="outcome_timeout">Timeout</string>
+    <string name="outcome_no_network">No Network</string>
+    <string name="outcome_missing_config">Missing Config</string>
+    <string name="outcome_relay_disabled">Relay Disabled</string>
+    <string name="outcome_parse_error">Parse Error</string>
+    <string name="outcome_ssl_warning">SSL Warning</string>
+    <string name="outcome_connection_test">Connection Test</string>
 </resources>
