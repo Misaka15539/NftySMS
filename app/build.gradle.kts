@@ -22,11 +22,14 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            // Ensure we don't need a signing config to just 'build' the task in CI
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
 
