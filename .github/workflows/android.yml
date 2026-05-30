@@ -31,6 +31,9 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew assembleDebug assembleRelease
 
+    - name: List installed build tools
+      run: ls $ANDROID_HOME/build-tools
+
     - name: Sign Android Release
       uses: r0adkll/sign-android-release@v1
       id: sign_app
