@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.smsntfyrelay"
+    namespace = "com.example.ntfysms"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.smsntfyrelay"
+        applicationId = "com.example.ntfysms"
         minSdk = 26
         targetSdk = 35
         versionCode = 1

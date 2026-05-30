@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "sms-ntfy-relay"
+rootProject.name = "NtfySMS"
 include(":app")
