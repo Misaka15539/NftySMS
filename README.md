@@ -1,4 +1,4 @@
-# Nfty-Relay (SMS-to-ntfy)
+# NftySMS (SMS-to-ntfy)
 
 A lightweight, reliable Android application that automatically intercepts incoming SMS messages and forwards them to a specified [ntfy.sh](https://ntfy.sh/) topic via push notifications.
 
@@ -6,22 +6,26 @@ Perfect for monitoring SMS two-factor authentication (2FA) codes, missed deliver
 
 ## Key Features
 
-*   **Robust Background Interception**: Uses Android **WorkManager** with **Expedited WorkRequests** to ensure reliable SMS relaying even when the app is in the background or the process is suspended by the system.
-*   **Offline Support & Network Constraints**: Automatically queues messages if internet is unavailable and relays them the moment connectivity is restored.
-*   **Intelligent Retries**: Built-in exponential backoff logic handles transient network or server failures.
-*   **Real-time Activity Log**: Instant visual confirmation with a "Pending" status for intercepted messages waiting for internet.
-*   **Custom Server Support**: Works with the public `ntfy.sh` server or any self-hosted Ntfy instance.
-*   **Secure Credential Storage**: Uses **EncryptedSharedPreferences** to store authentication tokens and passwords safely.
+*   **Robust Background Interception**: Uses Android **WorkManager** with **Expedited WorkRequests** to ensure reliable SMS relaying even when the app is in the background or the system is under memory pressure.
+*   **Offline Support & Automatic Retries**: Automatically queues messages if internet is unavailable and relays them the moment connectivity is restored using WorkManager's persistent job scheduling.
+*   **Real-time Activity Log**: Instant visual confirmation of relay status (Pending, Success, Failure) with a rolling **200-entry capacity** to keep storage usage low.
+*   **Secure Credential Storage**: Uses **EncryptedSharedPreferences** (backed by Android Keystore) to store sensitive authentication tokens and passwords.
+*   **Flexible Authentication**: Supports **Bearer Token** and **HTTP Basic Authentication** for private ntfy topics.
+*   **SSL/TLS Customization**: Optional toggle to disable SSL certificate validation for connections to self-hosted ntfy instances with self-signed certificates (use with caution).
+*   **Modern Native UI**: Fully built with **Jetpack Compose** and **Material Design 3**, supporting dynamic colors (Android 12+) and dark mode.
 *   **Battery Efficient**: Leverages the system's native broadcast and job scheduling mechanisms to minimize battery impact.
 
 ## Architecture
 
-The application follows a modern **MVVM + Repository** architecture using:
-*   **UI**: Jetpack Compose with Material 3.
-*   **DI**: Hilt for dependency injection.
-*   **Data**: Room for activity logging and DataStore for settings.
-*   **Networking**: OkHttp 4 for secure and efficient HTTP POST requests.
-*   **Background**: WorkManager for high-priority, persistent background tasks.
+The application follows a modern **MVVM + Repository** architecture with three layers:
+
+1.  **Presentation Layer**: Jetpack Compose UI with Hilt-injected ViewModels.
+2.  **Domain Layer**: Use cases that orchestrate business logic (Relay, Settings, Credentials).
+3.  **Data Layer**:
+    *   **LogRepository**: Room-backed storage for the activity log.
+    *   **SettingsRepository**: DataStore (Preferences) for non-sensitive app settings.
+    *   **CredentialRepository**: EncryptedSharedPreferences for secure auth storage.
+    *   **NtfyRepository**: OkHttp-based client for posting to the ntfy API.
 
 ## Prerequisites
 
@@ -41,14 +45,22 @@ The application follows a modern **MVVM + Repository** architecture using:
 
 ## Usage
 
-1.  Grant **SMS Permissions** when prompted.
-2.  Navigate to **Settings** and configure your Ntfy Topic URL.
-3.  Set up **Authentication** (Bearer Token or Basic Auth) if required by your Ntfy server.
-4.  Toggle the **SMS Relay** switch on the main screen.
-5.  All incoming SMS messages will now appear in the activity log and be forwarded to your Ntfy topic.
+1.  **Grant Permissions**: Grant **SMS Permissions** when prompted on first launch.
+2.  **Configure Topic**: Navigate to **Settings** and enter your Ntfy Topic URL (e.g., `https://ntfy.sh/my-topic`).
+3.  **Set Authentication**: If your topic is protected, select **Bearer Token** or **Basic Auth** and enter your credentials.
+4.  **Security Options**: Toggle **SSL Validation** if using a self-hosted server with untrusted certificates.
+5.  **Enable Relay**: Toggle the **SMS Relay** switch on the main screen.
+6.  **Test Connection**: Use the test action in settings to verify your configuration.
 
 ## Privacy & Security
 
-*   **No Tracking**: No analytics or third-party SDKs.
-*   **Encrypted Secrets**: Sensitive credentials never appear in logs and are encrypted on disk.
-*   **Direct Communication**: Messages are sent directly from your device to your configured Ntfy server.
+*   **No Tracking**: No analytics, no third-party SDKs, no ads.
+*   **Encryption at Rest**: Sensitive credentials are encrypted on disk using AES-256-GCM via the Android Keystore.
+*   **Zero Leakage**: Credentials never appear in logs, UI (except masked placeholders), or system logcat.
+*   **Direct Communication**: Messages are sent directly from your device to your configured ntfy server.
+
+## License
+
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+
+*Note: This project is an independent client that interacts with the [ntfy](https://ntfy.sh) service via its public API. It is not affiliated with or endorsed by the ntfy project.*
