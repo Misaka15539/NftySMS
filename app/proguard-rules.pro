@@ -32,3 +32,7 @@
 # OkHttp
 -dontwarn okhttp3.**
 -dontwarn okio.**
+
+# Error Prone annotations are not required at runtime (used by Tink/Security)
+-dontwarn com.google.errorprone.annotations.**
+-dontwarn javax.annotation.**

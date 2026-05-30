@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.ksp)
@@ -8,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.example.ntfysms"
-    compileSdk = 35
+    compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
         applicationId = "com.example.ntfysms"
@@ -38,13 +37,10 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = "17"
-    }
-
     buildFeatures {
         compose = true
         buildConfig = true
+        resValues = true
     }
 
     testOptions {
@@ -54,6 +50,12 @@ android {
                 it.useJUnitPlatform()
             }
         }
+    }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
     }
 }
 
@@ -96,8 +98,8 @@ dependencies {
 
     // WorkManager
     implementation(libs.androidx.work.runtime.ktx)
-    implementation("androidx.hilt:hilt-work:1.2.0")
-    ksp("androidx.hilt:hilt-compiler:1.2.0")
+    implementation(libs.androidx.hilt.work)
+    ksp(libs.androidx.hilt.compiler)
 
     // AndroidX Security (EncryptedSharedPreferences)
     implementation(libs.security.crypto)

@@ -12,7 +12,7 @@ import javax.inject.Inject
  * Thin wrapper over [SettingsRepository] for use by ViewModels.
  */
 class SettingsUseCase @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
     private val settingsRepository: SettingsRepository,
 ) {
 
