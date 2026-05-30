@@ -29,10 +29,28 @@ jobs:
       run: ./gradlew testDebugUnitTest
 
     - name: Build with Gradle
-      run: ./gradlew assembleDebug
+      run: ./gradlew assembleDebug assembleRelease
 
-    - name: Upload APK
+    - name: Sign Android Release
+      uses: r0adkll/sign-android-release@v1
+      id: sign_app
+      with:
+        releaseDirectory: app/build/outputs/apk/release
+        signingKeyBase64: ${{ secrets.SIGNING_KEY }}
+        alias: ${{ secrets.ALIAS }}
+        keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
+        keyPassword: ${{ secrets.KEY_PASSWORD }}
+      env:
+        BUILD_TOOLS_VERSION: "35.0.0"
+
+    - name: Upload Debug APK
       uses: actions/upload-artifact@v4
       with:
         name: nfty-relay-debug
         path: app/build/outputs/apk/debug/app-debug.apk
+
+    - name: Upload Signed Release APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: nfty-relay-release
+        path: ${{ steps.sign_app.outputs.signedReleaseFile }}
