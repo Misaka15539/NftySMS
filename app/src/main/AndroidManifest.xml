@@ -64,7 +64,8 @@
             android:name="androidx.work.impl.foreground.SystemForegroundService"
             android:foregroundServiceType="dataSync"
             android:directBootAware="true"
-            tools:node="merge" />
+            tools:node="merge"
+            tools:replace="android:directBootAware" />
 
     </application>
 
