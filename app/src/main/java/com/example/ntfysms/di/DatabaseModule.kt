@@ -19,11 +19,16 @@ object DatabaseModule {
     @Singleton
     fun provideAppDatabase(
         @ApplicationContext context: Context,
-    ): AppDatabase = Room.databaseBuilder(
-        context,
-        AppDatabase::class.java,
-        "sms_ntfy_relay.db",
-    ).build()
+    ): AppDatabase {
+        // Use device-protected storage for the database so that SmsReceiver
+        // (which is marked directBootAware) can access it even before the first unlock.
+        val deviceContext = context.createDeviceProtectedStorageContext()
+        return Room.databaseBuilder(
+            deviceContext,
+            AppDatabase::class.java,
+            "sms_ntfy_relay.db",
+        ).build()
+    }
 
     @Provides
     @Singleton

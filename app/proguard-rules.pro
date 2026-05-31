@@ -1,38 +1,43 @@
-# Add project specific ProGuard rules here.
-# You can control the set of applied configuration files using the
-# proguardFiles setting in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
+# ---------------------------------------------------------------------------
+# General Android / Hilt / Room Rules
+# ---------------------------------------------------------------------------
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+# Specific components referenced in Manifest to avoid overly broad keep rules
+-keep public class com.example.ntfysms.MainActivity
+-keep public class com.example.ntfysms.NtfySMS
+-keep public class com.example.ntfysms.receiver.SmsReceiver
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
-
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+# Maintain line numbers for easier debugging in release logs
+-keepattributes SourceFile,LineNumberTable
 
 # Hilt
--keep class dagger.hilt.** { *; }
+-keep class dagger.hilt.internal.GeneratedComponentManager { *; }
+-keep class * extends dagger.hilt.internal.GeneratedComponentManager { *; }
+-keep class * implements dagger.hilt.internal.GeneratedComponentManager { *; }
 -keep class javax.inject.** { *; }
 
 # Room
 -keep class * extends androidx.room.RoomDatabase
--keep @androidx.room.Entity class *
--keep @androidx.room.Dao class *
+-keep @androidx.room.Entity class * { *; }
+-keep @androidx.room.Dao class * { *; }
 
 # OkHttp
 -dontwarn okhttp3.**
 -dontwarn okio.**
 
-# Error Prone annotations are not required at runtime (used by Tink/Security)
+# Error Prone
 -dontwarn com.google.errorprone.annotations.**
 -dontwarn javax.annotation.**
+
+# ---------------------------------------------------------------------------
+# Project Specific Protection
+# ---------------------------------------------------------------------------
+
+# Keep domain/data models (serialized to/from Database or JSON)
+-keep class com.example.ntfysms.data.LogEntry { *; }
+-keep class com.example.ntfysms.domain.LogOutcome { *; }
+
+# Keep WorkManager Workers
+-keep class * extends androidx.work.ListenableWorker {
+    public <init>(android.content.Context, androidx.work.WorkerParameters);
+}
